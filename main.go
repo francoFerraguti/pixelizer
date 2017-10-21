@@ -15,7 +15,7 @@ func main() {
 
 	sampleImage := loadImage("gioconda_2.jpg")
 
-	pixelizedImage := pixelizeImage(sampleImage, 4)
+	pixelizedImage := pixelizeImage(sampleImage, 4, 6)
 
 	outputFile, err := os.Create("output.png")
 	defer outputFile.Close()
@@ -27,12 +27,12 @@ func main() {
 	png.Encode(outputFile, pixelizedImage)
 }
 
-func pixelizeImage(img image.Image, pixelSize int) image.Image {
+func pixelizeImage(img image.Image, pixelWidth, pixelHeight int) image.Image {
 	width := img.Bounds().Max.X
 	height := img.Bounds().Max.Y
 
-	widthInFakePixels := width / pixelSize
-	heightInFakePixels := height / pixelSize
+	widthInFakePixels := width / pixelWidth
+	heightInFakePixels := height / pixelHeight
 
 	log.Println("Width in fake pixels: " + strconv.Itoa(widthInFakePixels))
 	log.Println("Height in fake pixels: " + strconv.Itoa(heightInFakePixels))
@@ -47,16 +47,16 @@ func pixelizeImage(img image.Image, pixelSize int) image.Image {
 
 			r, g, b, a := img.At(x, y).RGBA()
 
-			for i := 0; i < width; i += pixelSize {
+			for i := 0; i < width; i += pixelWidth {
 				if x < i {
-					fakePixelX = i / pixelSize
+					fakePixelX = i / pixelWidth
 					break
 				}
 			}
 
-			for i := 0; i < height; i += pixelSize {
+			for i := 0; i < height; i += pixelHeight {
 				if y < i {
-					fakePixelY = i / pixelSize
+					fakePixelY = i / pixelHeight
 					break
 				}
 			}
@@ -70,10 +70,10 @@ func pixelizeImage(img image.Image, pixelSize int) image.Image {
 
 	for y := 0; y < heightInFakePixels; y++ {
 		for x := 0; x < widthInFakePixels; x++ {
-			rArray[x][y] = rArray[x][y] / pixelSize / pixelSize
-			gArray[x][y] = gArray[x][y] / pixelSize / pixelSize
-			bArray[x][y] = bArray[x][y] / pixelSize / pixelSize
-			aArray[x][y] = aArray[x][y] / pixelSize / pixelSize
+			rArray[x][y] = rArray[x][y] / pixelWidth / pixelHeight
+			gArray[x][y] = gArray[x][y] / pixelWidth / pixelHeight
+			bArray[x][y] = bArray[x][y] / pixelWidth / pixelHeight
+			aArray[x][y] = aArray[x][y] / pixelWidth / pixelHeight
 		}
 	}
 
@@ -85,16 +85,16 @@ func pixelizeImage(img image.Image, pixelSize int) image.Image {
 			fakePixelX := 0
 			fakePixelY := 0
 
-			for i := 0; i < width; i += pixelSize {
+			for i := 0; i < width; i += pixelWidth {
 				if x < i {
-					fakePixelX = i / pixelSize
+					fakePixelX = i / pixelWidth
 					break
 				}
 			}
 
-			for i := 0; i < height; i += pixelSize {
+			for i := 0; i < height; i += pixelHeight {
 				if y < i {
-					fakePixelY = i / pixelSize
+					fakePixelY = i / pixelHeight
 					break
 				}
 			}
